@@ -57,19 +57,17 @@ struct patient * minHeapify(struct patient *head)
 }
 struct patient *insert(struct patient *head, const struct patient *node)
 {
-        if (head == NULL) {
-                return node;
-        }
-        if ((head -> left) && (head -> right)) {
-                head = insert(head -> left, node);
-                head = insert(head -> right, node);
-        }
-        else if (!(head -> left)) {
+        if (head == NULL)
+                head = node;
+        else if (head -> left == NULL)
                 head -> left = node;
-        } else {
+        else
                 head -> right = node;
-        }
+        
+        head = insert(head -> left, node);
+        head = insert(head -> right, node);
         return head;
+        
 }
 struct patient *max_age(struct patient *left, struct patient *right) 
 {
