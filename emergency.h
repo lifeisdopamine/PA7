@@ -15,8 +15,6 @@ struct leaf_t {
         struct leaf_t *next;
 };
 
-struct stack_t *stack[100];
-
 
 void newArrival (char name[], int age);
 struct patient getNextPatient();

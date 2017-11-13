@@ -1,12 +1,12 @@
 #include "emergency.h"
 
-struct leaf_t *QChildHead = NULL;
-struct leaf_t *QSeniorHead = NULL;
 
 int main(void)
 {
         struct patient * details;
         struct patient *head_child = NULL;
+        struct leaf_t *QChildHead = NULL;
+        struct leaf_t *QSeniorHead = NULL;
         details = malloc(sizeof(struct patient));
         
         if (patient -> age <= 10) {
@@ -19,26 +19,26 @@ int main(void)
 
         return 0;
 }
-void child_data(struct patient *head, struct patient *details)
+void child_data(struct patient *head, struct patient *details, struct leaf_t *QchildHead)
 {
         if (head == NULL) {
                 head = create_node(details -> name, details -> age, details -> arrivalTime);
                 return;
         }
-        struct patient node = create_node(details -> name, details -> age, details -> arrivalTime);
-        head = insert(head, node);
+        struct patient node = create_node(details);
+        head = insert(head, node, QchildHead);
         head = minHeapify(head);
 
 
 }
 /*Min Heap */
-struct patient * create_node(char n[], int a, int time)
+struct patient * create_node(struct patient *details)
 {
         
         struct patient node = calloc(1, sizeof(struct patient));
-        strcpy(node -> name, n);
-        node -> age = a;
-        node -> arrivalTime = time;
+        strcpy(node -> name, details -> name);
+        node -> age = details -> age;
+        node -> arrivalTime = details -> arrivalTime;
         return node;
 }
 struct patient * minHeapify(struct patient *head)
@@ -50,12 +50,13 @@ struct patient * minHeapify(struct patient *head)
         if ((head -> right -> age) <= head -> age)
                 head = swap(head, head -> right);
         
-        head = minHeapify(head -> left);
-        head = minHeapify(head -> right);
+        head -> left = minHeapify(head -> left);
+        head -> right = minHeapify(head -> right);
 
         return head;
         
-}
+}/* Old Insert Function */
+/*
 struct patient *insert(struct patient *head, const struct patient *node)
 {
         if (head == NULL)
@@ -69,6 +70,14 @@ struct patient *insert(struct patient *head, const struct patient *node)
         head = insert(head -> right, node);
         return head;
         
+}*/
+
+struct patient *insert(struct patient *head, struct patient *node, struct leaf_t *QHead)
+{
+        QChildHead -> ptr -> left = node;
+        dequeue_leaf(&QHead);
+        enqueue_leaf(&Qhead, node);
+        return head;
 }
 struct patient *max_age(struct patient *left, struct patient *right) 
 {
@@ -94,6 +103,9 @@ struct patient *swap(struct patient *d1, struct patient *d2)
         d2 -> age = tmp -> age;
         d2 -> arrivalTime = tmp -> arrivalTime;
         strcpy(d2 -> name, tmp -> name);
+        
+        free(tmp);
+        
         return d1;
 }
 void find_leaf(struct patient *head)
@@ -104,13 +116,13 @@ void find_leaf(struct patient *head)
         find_leaf(head -> left);
         find_lead(head -> right); 
 }
-void enqueue_leaf(struct patient *node)
+void enqueue_leaf(struct leaf_t **head, struct patient *node)
 {
-        if (QChildHead == NULL) {
-                QChildHead = calloc(1, sizeof(struct leaf_t));
-                QChildHead -> ptr = node;
+        if (*head == NULL) {
+                *head = calloc(1, sizeof(struct leaf_t));
+                *head -> ptr = node;
         } else {
-                struct leaf_t *tmp = QChildHead;
+                struct leaf_t *tmp = *head;
                 while (tmp -> next != NULL) {
                         tmp = tmp -> next;
                 }
