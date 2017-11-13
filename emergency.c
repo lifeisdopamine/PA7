@@ -6,15 +6,16 @@ int main(void)
 {
         struct patient * details;
         struct patient *head_child = NULL;
-        
+        struct leaf_t *headChildLeaf = NULL;
         details = malloc(sizeof(struct patient));
         
         if (patient -> age <= 10) {
                 child_data(head, details);
         } else if (patient -> age >= 60) {
                 senior_data(details);
-        } else 
+        } else {
                 adult_data(details);
+        }
 
         return 0;
 }
@@ -95,14 +96,35 @@ struct patient *swap(struct patient *d1, struct patient *d2)
         strcpy(d2 -> name, tmp -> name);
         return d1;
 }
-find_leaf(struct patient head)
+find_leaf(struct patient *head)
 {
         if (head -> left == NULL && head -> right == NULL) {
-                return head -> left;
-        } else if (head -> right == NULL) {
-                return head -> right;
+                return enqueue_leaf(&head);
+        }       
+        find_leaf(head -> left);
+        find_lead(head -> right); 
+}
+void enqueue_leaf(struct leaf_t **head, struct patient *node)
+{
+        if (*head == NULL) {
+                *head = calloc(1, sizeof(struct leaf_t));
+                *head -> ptr = node;
         } else {
-                return head -> left;
+                struct leaf_t *tmp = *head;
+                while (tmp -> next != NULL) {
+                        tmp = tmp -> next;
+                }
+                tmp -> next = calloc(1, sizeof(struct leaf_t));
+                tmp -> next -> ptr = node;
         }
-        return find_leaf(head -> left);
+        return;
+}
+void dequeue_leaf(struct leaf_t **head) 
+{
+        if (*head == NULL) {
+                return;
+        }
+        struct leaf_t *tmp = *head -> next;
+        free(*head);
+        *head = tmp;
 }

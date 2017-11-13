@@ -10,10 +10,9 @@ struct patient {
         struct patient *right;
 };
 
-struct stack_t {
-        char name[20];
-        int age;
-        int arrivalTime;
+struct leaf_t {
+        struct patient *ptr;
+        struct leaf_t *next;
 };
 
 struct stack_t *stack[100];
