@@ -1,12 +1,12 @@
 #include "emergency.h"
 
-
+struct leaf_t *QChildHead = NULL;
+struct leaf_t *QSeniorHead = NULL;
 
 int main(void)
 {
         struct patient * details;
         struct patient *head_child = NULL;
-        struct leaf_t *headChildLeaf = NULL;
         details = malloc(sizeof(struct patient));
         
         if (patient -> age <= 10) {
@@ -96,21 +96,21 @@ struct patient *swap(struct patient *d1, struct patient *d2)
         strcpy(d2 -> name, tmp -> name);
         return d1;
 }
-find_leaf(struct patient *head)
+void find_leaf(struct patient *head)
 {
         if (head -> left == NULL && head -> right == NULL) {
-                return enqueue_leaf(&head);
+                return enqueue_leaf(head);
         }       
         find_leaf(head -> left);
         find_lead(head -> right); 
 }
-void enqueue_leaf(struct leaf_t **head, struct patient *node)
+void enqueue_leaf(struct patient *node)
 {
-        if (*head == NULL) {
-                *head = calloc(1, sizeof(struct leaf_t));
-                *head -> ptr = node;
+        if (QChildHead == NULL) {
+                QChildHead = calloc(1, sizeof(struct leaf_t));
+                QChildHead -> ptr = node;
         } else {
-                struct leaf_t *tmp = *head;
+                struct leaf_t *tmp = QChildHead;
                 while (tmp -> next != NULL) {
                         tmp = tmp -> next;
                 }
